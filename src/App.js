@@ -1,57 +1,33 @@
-import { useState, useEffect } from "react";
-import { nanoid } from "nanoid";
-import NotesList from "./components/NotesList";
-import Search from "./components/Search";
-import Header from "./components/Header";
-
+import React, { useEffect } from "react";
+import Home from "./components/Home";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import MovieApp from "./MovieApp";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import Protected from "./Protected";
 const App = () => {
-  const [notes, setNotes] = useState([]);
-  const [searchText, setSearchText] = useState("");
+  const auth = getAuth();
+  const navigate = useNavigate();
 
-  const [darkMode, setDarkMode] = useState(false);
-
-  useEffect(() => {
-    const savedNotes = JSON.parse(localStorage.getItem("react-notes-app-data"));
-
-    //if (savedNotes) {
-    setNotes(savedNotes);
-    //}
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("react-notes-app-data", JSON.stringify(notes));
-  }, [notes]);
-
-  const addNote = (text) => {
-    const date = new Date();
-    const newNote = {
-      id: nanoid(),
-      text: text,
-      date: date.toLocaleDateString(),
-    };
-    const newNotes = [...notes, newNote];
-    setNotes(newNotes);
-  };
-
-  const deleteNote = (id) => {
-    const newNotes = notes.filter((note) => note.id !== id);
-    setNotes(newNotes);
-  };
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log(user);
+    } else {
+      //console.log(user);
+    }
+  });
 
   return (
-    <div className={`${darkMode && "dark-mode"}`}>
-      <div className="container">
-        <Header handleToggleDarkMode={setDarkMode} />
-        <Search handleSearchNote={setSearchText} />
-        <NotesList
-          notes={notes.filter((note) =>
-            note.text.toLowerCase().includes(searchText)
-          )}
-          handleAddNote={addNote}
-          handleDeleteNote={deleteNote}
-        />
-      </div>
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route
+        path="/home"
+        element={
+          <Protected>
+            <MovieApp />
+          </Protected>
+        }
+      />
+    </Routes>
   );
 };
 
