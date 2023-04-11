@@ -31,7 +31,7 @@ const Home = ({ component: Component, ...rest }) => {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      navigate("/home");
+      navigate("/movies");
       Handlelogin();
       console.log(userr.email);
     } catch (error) {
@@ -39,11 +39,22 @@ const Home = ({ component: Component, ...rest }) => {
     }
   };
 
+  const signInWithGoogle = async (e) => {
+    e.preventDefault();
+    try {
+      await signInWithPopup(auth, googleProvider);
+      navigate("/movies");
+      Handlelogin();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const login = async (e) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/home");
+      navigate("/movies");
     } catch (error) {
       console.error();
     }
@@ -118,6 +129,15 @@ const Home = ({ component: Component, ...rest }) => {
           Login
         </button>
       </form>
+      <div>
+        <button
+          type="submit"
+          className="btn btn-primary"
+          onClick={signInWithGoogle}
+        >
+          Sign in with Google
+        </button>
+      </div>
     </div>
   );
 };

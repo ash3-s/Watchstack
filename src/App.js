@@ -4,6 +4,8 @@ import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import MovieApp from "./MovieApp";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Protected from "./Protected";
+import TVApp from "./TVApp";
+
 const App = () => {
   const auth = getAuth();
   const navigate = useNavigate();
@@ -20,10 +22,18 @@ const App = () => {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route
-        path="/home"
+        path="/movies"
         element={
           <Protected>
             <MovieApp />
+          </Protected>
+        }
+      />
+      <Route
+        path="/tv"
+        element={
+          <Protected>
+            <TVApp />
           </Protected>
         }
       />
