@@ -18,7 +18,7 @@ const Protected2 = ({ children }) => {
   }, []);
 
   if (isLoggedIn) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/movies" replace />;
   } else {
     return children;
   }
