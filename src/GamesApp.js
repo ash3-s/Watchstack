@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
-import MovieList from "./components/MovieList";
+import GameList from "./components/GameList";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import MovieHeading from "./components/MovieHeading";
-import SearchBox from "./components/SearchBox";
-import AddtoWatchList from "./components/AddtoWatchList";
+import SearchBox2 from "./components/SearchBox2";
+import AddtoBacklog from "./components/AddtoBacklog";
 import RemovefromWatchList from "./components/RemovefromWatchList";
-import MovieList2 from "./components/MovieList2";
+import GameList2 from "./components/GameList2";
 import { auth } from "./config/firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   db,
-  AddShowtoFirestoreWatchList,
-  RemoveShowfromFirestoreWatchList,
-  AddShowtoFirestoreWatchedList,
-  RemoveShowfromFirestoreWatchedList,
+  AddGametoFirestoreBacklog,
+  RemoveGamefromFirestoreBacklog,
+  AddGametoFirestorePlayedList,
+  RemoveGamefromFirestorePlayedList,
 } from "./config/firebase";
 import {
   getDocs,
@@ -25,23 +25,26 @@ import {
   orderBy,
   query,
 } from "firebase/firestore";
-import "./navbarbuttons.css";
+import TVApp from "./TVApp";
 
-const TVApp = () => {
-  const [shows, setShows] = useState([]);
+const GamesApp = () => {
+  const [games, setGames] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [watchlist, setWatchlist] = useState([]);
   const [watched, setWatched] = useState([]);
   const navigate = useNavigate();
   const users = collection(db, "Users");
+  /*  function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }*/
 
   const getMovieRequest = async (searchValue) => {
-    const url = `https://api.themoviedb.org/3/search/tv?api_key=f46cc141482b65a1ce4af7ceec09ccd5&language=en-US&page=1&include_adult=false&query=${searchValue}`;
-
-    const Showresponse = await fetch(url);
-    const responseJson = await Showresponse.json();
+    const url = `https://api.rawg.io/api/games?key=dc8dfd59a1fe4d84a75c1efa345d8a53&search=${searchValue}&page_size=10&search_precise=true`;
+    const Movieresponse = await fetch(url);
+    const responseJson = await Movieresponse.json();
+    //console.log(responseJson);
     if (!responseJson.errors) {
-      setShows(responseJson.results);
+      setGames(responseJson.results);
     }
   };
   useEffect(() => {
@@ -49,18 +52,18 @@ const TVApp = () => {
   }, [searchValue]);
 
   useEffect(() => {
-    FetchShowWatchList();
-    FetchShowWatchedList();
+    FetchGameBacklog();
+    FetchGamePlayedList();
     console.log(watchlist);
   }, []);
 
-  const FetchShowWatchList = () => {
+  const FetchGameBacklog = () => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       const db = getFirestore();
       const usersRef = collection(db, "users");
       if (user) {
         const userDocRef = doc(usersRef, user.uid);
-        const subcollectionRef = collection(userDocRef, "tvwatchlist");
+        const subcollectionRef = collection(userDocRef, "gamebacklog");
         const snapshot = getDocs(subcollectionRef);
         const q = query(subcollectionRef, orderBy("timestamp", "desc"));
         getDocs(q)
@@ -75,14 +78,13 @@ const TVApp = () => {
           .catch((err) => {
             console.log(err.message);
           });
-
         /*const ml = getDocs(subcollectionRef)
           .then((snapshot) => {
-            const tvwatchlistfromfirestore = [];
+            const gamebacklogfromfirestore = [];
             snapshot.docs.forEach((doc) => {
-              tvwatchlistfromfirestore.push({ ...doc.data(), id: doc.id });
+              gamebacklogfromfirestore.push({ ...doc.data(), id: doc.id });
             });
-            setWatchlist(tvwatchlistfromfirestore.reverse());
+            setWatchlist(gamebacklogfromfirestore.reverse());
           })
           .catch((err) => {
             console.log(err.message);
@@ -93,13 +95,13 @@ const TVApp = () => {
       return unsubscribe;
     });
   };
-  const FetchShowWatchedList = () => {
+  const FetchGamePlayedList = () => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       const db = getFirestore();
       const usersRef = collection(db, "users");
       if (user) {
         const userDocRef = doc(usersRef, user.uid);
-        const subcollectionRef = collection(userDocRef, "tvwatchedlist");
+        const subcollectionRef = collection(userDocRef, "gameplayedlist");
         const snapshot = getDocs(subcollectionRef);
         const q = query(subcollectionRef, orderBy("timestamp", "desc"));
         getDocs(q)
@@ -114,14 +116,13 @@ const TVApp = () => {
           .catch((err) => {
             console.log(err.message);
           });
-
         /*const ml = getDocs(subcollectionRef)
           .then((snapshot) => {
-            const tvwatchlistfromfirestore = [];
+            const gameplayedlistfromfirestore = [];
             snapshot.docs.forEach((doc) => {
-              tvwatchlistfromfirestore.push({ ...doc.data(), id: doc.id });
+              gameplayedlistfromfirestore.push({ ...doc.data(), id: doc.id });
             });
-            setWatched(tvwatchlistfromfirestore.reverse());
+            setWatched(gameplayedlistfromfirestore.reverse());
           })
           .catch((err) => {
             console.log(err.message);
@@ -132,42 +133,42 @@ const TVApp = () => {
       return unsubscribe;
     });
   };
-  const addtolist = (show) => {
-    if (watchlist.find((s) => parseInt(s.id) === show.id)) {
-      alert("This show is already in your watchlist!");
+  const addtolist = (game) => {
+    if (watchlist.find((m) => parseInt(m.id) === game.id)) {
+      alert("This Game is already in your Backlog!");
       return;
     }
-    if (watched.find((s) => parseInt(s.id) === show.id)) {
-      alert("This show is already in your watched list!");
+    if (watched.find((m) => parseInt(m.id) === game.id)) {
+      alert("This Game is already in your Played list!");
       return;
     }
-    const newList = [show, ...watchlist];
+    const newList = [game, ...watchlist];
     setWatchlist(newList);
-    AddShowtoFirestoreWatchList(show);
+    AddGametoFirestoreBacklog(game);
     console.log(watchlist);
   };
-  const removefromlist = (show) => {
-    const newlist = watchlist.filter((favourite) => favourite.id !== show.id);
+  const removefromlist = (game) => {
+    const newlist = watchlist.filter((favourite) => favourite.id !== game.id);
     setWatchlist(newlist);
-    RemoveShowfromFirestoreWatchList(show);
+    RemoveGamefromFirestoreBacklog(game);
   };
-  const addtowatchedlist = (show) => {
-    if (watched.find((s) => parseInt(s.id) === show.id)) {
-      alert("This show is already in your watched list!");
+  const addtowatchedlist = (game) => {
+    if (watched.find((m) => parseInt(m.id) === game.id)) {
+      alert("This Game is already in your Played list!");
       return;
     }
-    const newlist = watchlist.filter((favourite) => favourite.id !== show.id);
+    const newlist = watchlist.filter((favourite) => favourite.id !== game.id);
     setWatchlist(newlist);
-    const newList = [show, ...watched];
+    const newList = [game, ...watched];
     setWatched(newList);
-    AddShowtoFirestoreWatchedList(show);
-    RemoveShowfromFirestoreWatchList(show);
+    AddGametoFirestorePlayedList(game);
+    RemoveGamefromFirestoreBacklog(game);
     console.log(watched);
   };
-  const removefromwatched = (show) => {
-    const newlist = watched.filter((favourite) => favourite.id !== show.id);
+  const removefromwatched = (game) => {
+    const newlist = watched.filter((favourite) => favourite.id !== game.id);
     setWatched(newlist);
-    RemoveShowfromFirestoreWatchedList(show);
+    RemoveGamefromFirestorePlayedList(game);
   };
   const logout = async (e) => {
     e.preventDefault();
@@ -178,17 +179,14 @@ const TVApp = () => {
     }
   };
 
-  const navigatetomovies = () => {
-    navigate("/movies");
+  const gototvapp = () => {
+    navigate("/tv");
   };
 
   const navigatetohome = () => {
     navigate("/");
   };
 
-  const navigatetoanime = () => {
-    navigate("/anime");
-  };
   return (
     <div>
       <nav className="navbar">
@@ -225,39 +223,42 @@ const TVApp = () => {
               <path d="M15.68 11.440000000000001 l3.84 0 l-3.72 28.56 l-3.96 0 l-2 -14.32 l-1.88 14.32 l-3.96 0 l-4 -28.56 l3.84 0 l2.08 14.72 l1.92 -14.72 l3.84 0 l2.08 14.72 z M29.147000000000002 40 l-1.44 -9.88 l-4.04 0 l-1.32 9.88 l-3.84 0 l4.32 -28.6 l5.16 0 l5 28.6 l-3.84 0 z M24.187 26.32 l2.96 0 l-1.52 -10.4 z M45.294 11.36 l0 3.84 l-4.76 0 l0 24.84 l-3.84 0 l0 -24.84 l-5.24 0 l0 -3.84 l13.84 0 z M53.161 39.92 c-2.96 0 -5.36 -2.4 -5.36 -5.36 l0 -17.76 c0 -2.96 2.4 -5.36 5.36 -5.36 s5.36 2.4 5.36 5.36 l0 1.6 l-3.8 0 l0 -1.6 c0 -0.84 -0.72 -1.56 -1.56 -1.56 s-1.56 0.72 -1.56 1.56 l0 17.76 c0 0.84 0.72 1.56 1.56 1.56 s1.56 -0.72 1.56 -1.56 l0 -2.56 l3.8 0 l0 2.56 c0 2.96 -2.4 5.36 -5.36 5.36 z M68.22800000000001 11.440000000000001 l3.8 0 l0 28.52 l-3.8 0 l0 -15.08 l-3.4 0 l0 15.08 l-3.8 0 l0 -28.52 l3.8 0 l0 9.68 l3.4 0 l0 -9.68 z M80.01500000000001 40.24 c-3.04 0 -5.48 -2.48 -5.48 -5.48 l0 -4.36 l3.88 0 l0 4.36 c0 0.88 0.72 1.6 1.6 1.6 s1.56 -0.72 1.56 -1.6 l0 -3.8 l-7.04 -9.72 l0 -4.96 c0 -3.04 2.44 -5.52 5.48 -5.52 c3 0 5.44 2.48 5.44 5.52 l0 4.32 l-3.88 0 l0 -4.32 c0 -0.92 -0.68 -1.6 -1.56 -1.6 s-1.6 0.68 -1.6 1.6 l0 3.64 l7.04 9.72 l0 5.12 c0 3 -2.44 5.48 -5.44 5.48 z M100.56200000000003 11.36 l0 3.84 l-4.76 0 l0 24.84 l-3.84 0 l0 -24.84 l-5.24 0 l0 -3.84 l13.84 0 z M110.70900000000002 40 l-1.44 -9.88 l-4.04 0 l-1.32 9.88 l-3.84 0 l4.32 -28.6 l5.16 0 l5 28.6 l-3.84 0 z M105.74900000000002 26.32 l2.96 0 l-1.52 -10.4 z M122.41600000000001 39.92 c-2.96 0 -5.36 -2.4 -5.36 -5.36 l0 -17.76 c0 -2.96 2.4 -5.36 5.36 -5.36 s5.36 2.4 5.36 5.36 l0 1.6 l-3.8 0 l0 -1.6 c0 -0.84 -0.72 -1.56 -1.56 -1.56 s-1.56 0.72 -1.56 1.56 l0 17.76 c0 0.84 0.72 1.56 1.56 1.56 s1.56 -0.72 1.56 -1.56 l0 -2.56 l3.8 0 l0 2.56 c0 2.96 -2.4 5.36 -5.36 5.36 z M138.80300000000003 39.84 l-4.2 -15.76 l-0.6 1 l0 14.88 l-3.72 0 l0 -28.52 l3.72 0 l0 6.2 l2.48 -6.2 l4.6 0 l-3.8 8.24 l5.4 20.16 l-3.88 0 z"></path>
             </g>
           </svg>
+          <button
+            type="submit"
+            className="bbt btn btn-primary "
+            onClick={logout}
+          >
+            Logout
+          </button>
         </div>
-        <button className="buttonn" onClick={navigatetomovies}>
-          Movies
-        </button>
-        <button className=" buttonn" onClick={navigatetoanime}>
-          Anime
-        </button>
-        <button className="buttonn " onClick={logout}>
-          Logout
-        </button>
       </nav>
       <div className="container-fluid movie-app">
         <div className="row d-flex align-items-center mt-4 mb-4">
-          <MovieHeading heading="TV Shows" />
+          <MovieHeading heading="Games" />
+          <button type="submit" className="btn btn-primary" onClick={gototvapp}>
+            Go to TV App
+          </button>
         </div>
         <div className="row d-flex align-items-center mt-4 mb-4">
-          <SearchBox
+          <SearchBox2
             searchValue={searchValue}
             setSearchValue={setSearchValue}
           />
         </div>
         <div className="row">
-          <MovieList
-            movies={shows}
+          <GameList
+            movies={games}
             handleoverlayclick={addtolist}
             handleoverlayclick2={addtowatchedlist}
-            watchlist={AddtoWatchList}
+            watchlist={AddtoBacklog}
           />
         </div>
-        <MovieHeading heading="Watchlist" />
+        <div className="mt-5">
+          <MovieHeading heading="Backlog" />
+        </div>
       </div>
       <div className="row ml-3">
-        <MovieList
+        <GameList
           movies={watchlist}
           handleoverlayclick={removefromlist}
           handleoverlayclick2={addtowatchedlist}
@@ -266,8 +267,8 @@ const TVApp = () => {
       </div>
       <div className="result-card">
         <div className="poster-wrapper">
-          <MovieHeading heading="Finished Watching" />
-          <MovieList2
+          <MovieHeading heading="Finished Playing" />
+          <GameList2
             movies={watched}
             handleremovefromwatched={removefromwatched}
           />
@@ -277,4 +278,4 @@ const TVApp = () => {
   );
 };
 
-export default TVApp;
+export default GamesApp;

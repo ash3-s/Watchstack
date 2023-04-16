@@ -1,20 +1,17 @@
 import React from "react";
 import "../App.css";
 
-const MovieList = (props) => {
+const GameList = (props) => {
   const FavouriteComponent = props.watchlist;
   return (
     <>
       {props.movies.map((movie, index) => (
-        <div className="image-container d-flex justify-align-content-start m-1">
-          {movie.poster_path ? (
+        <div className="image-containerr d-flex justify-content-start m-1 ml-5 mt-3">
+          {movie.background_image ? (
             <div>
-              <img
-                src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
-                alt={`${movie.title}Poster`}
-              />
+              <img src={movie.background_image} alt={`${movie.title}Poster`} />
               <div>
-                <span className="moviename">
+                <span className="movienamee">
                   {movie.title}
                   {movie.name}
                 </span>
@@ -23,7 +20,7 @@ const MovieList = (props) => {
           ) : (
             <div>
               <div className="filler-poster"></div>
-              <span className="moviename">Movie not Available</span>
+              <span className="moviename">Game not Available</span>
             </div>
           )}
 
@@ -33,7 +30,7 @@ const MovieList = (props) => {
               props.handleoverlayclick(movie);
               console.log(movie);
             }}
-            className="overlay d-flex align-items-center justify-content-center "
+            className="overlay d-flex align-items-center justify-content-center"
           >
             <FavouriteComponent />
             <div
@@ -44,7 +41,7 @@ const MovieList = (props) => {
               className="overlay watchedoverlay d-flex align-items-center justify-content-center"
             >
               <>
-                <span className="mr-2">Mark as Watched</span>
+                <span className="mr-2">Mark as Played</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -64,4 +61,4 @@ const MovieList = (props) => {
   );
 };
 
-export default MovieList;
+export default GameList;

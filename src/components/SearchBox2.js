@@ -1,14 +1,14 @@
 import React from "react";
 import "../search.css";
 
-const SearchBox = (props) => {
+const SearchBox2 = (props) => {
   return (
     <div className="search">
       <input
         type="text"
         name="text"
         class="input"
-        placeholder="Browse movies.."
+        placeholder="Browse games.."
         value={props.value}
         onChange={(event) => props.setSearchValue(event.target.value)}
       ></input>
@@ -16,4 +16,4 @@ const SearchBox = (props) => {
   );
 };
 
-export default SearchBox;
+export default SearchBox2;

@@ -6,6 +6,17 @@ body {
   white-space: pre-wrap;
 }
 
+h1 {
+  font-family: "Montserrat", sans-serif;
+}
+
+.wl {
+  padding-top: 20px;
+}
+
+.movie-app {
+  padding-top: 9%;
+}
 .movie-app > .row {
   overflow-x: auto;
   overflow-y: hidden;
@@ -13,6 +24,7 @@ body {
 }
 
 .image-container {
+  padding-left: 20px;
   position: relative;
   transition: transform 0.2s;
 }
@@ -25,16 +37,20 @@ body {
 .image-container:hover .overlay {
   opacity: 1;
 }
-
+.bbt {
+  position: absolute;
+  margin-left: 73%;
+  margin-top: 20px;
+}
 .overlay {
   position: absolute;
   background: rgba(0, 0, 0, 0.8);
   width: 100%;
   transition: 0.5s ease;
   opacity: 0;
-  bottom: 0;
-  font-size: 20px;
-  padding: 10px;
+  bottom: 20%;
+  font-size: 18px;
+  padding: 20px;
   text-align: center;
 }
 .watchedoverlay {
@@ -51,6 +67,7 @@ body {
   background-color: #ffffff;
   border-radius: 5px;
   margin-right: 15px;
+  margin-left: 30px;
   display: block;
   color: transparent;
 }
@@ -61,16 +78,140 @@ body {
 }
 header .inner-content {
   display: flex;
+  flex-direction: row-reverse;
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
 }
 .filler-poster {
-  width: 75px;
-  height: 113px;
+  width: 180px;
+  height: 300px;
   background-color: #ffffff;
   border-radius: 5px;
   margin-right: 15px;
   display: block;
   color: transparent;
+}
+
+.image-containerr img {
+  position: relative;
+  width: 200px;
+  height: 300px;
+  transition: transform 0.2s;
+}
+.image-containerr:hover {
+  cursor: pointer;
+  transform: scale(1.1);
+}
+
+.image-containerr:hover .overlay {
+  opacity: 1;
+  margin-top: 100%;
+}
+
+.moviecontainer {
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+  width: 280px;
+  transition: transform 0.2s;
+}
+
+.moviecontainer:hover {
+  object-fit: cover;
+  transform: scale(1.1);
+}
+.moviename {
+  display: flex;
+  width: 250px;
+  font-size: 18px;
+  font-weight: 600;
+  color: rgb(255, 255, 255);
+  margin: 15px 0;
+  padding: 10px;
+  white-space: pre-wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.movienamee {
+  display: flex;
+  width: 250px;
+  font-size: 18px;
+  font-weight: 600;
+  color: rgb(255, 255, 255);
+  margin: 15px 0;
+  padding-bottom: 200px;
+  white-space: pre-wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bbutton {
+  padding: 15px 25px;
+  position: fixed;
+  margin-top: 20px;
+  scale: 80%;
+  border: unset;
+  border-radius: 15px;
+  color: #635f5f;
+  z-index: 1;
+  background: #000000;
+  position: relative;
+  font-weight: 1000;
+  font-size: 17px;
+  -webkit-box-shadow: 4px 8px 19px -3px rgba(0, 0, 0, 0.27);
+  box-shadow: 4px 8px 19px -3px rgba(0, 0, 0, 0.27);
+  transition: all 250ms;
+  overflow: hidden;
+}
+
+.bbutton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0;
+  border-radius: 15px;
+  background-color: #212121;
+  z-index: -1;
+  -webkit-box-shadow: 4px 8px 19px -3px rgba(0, 0, 0, 0.27);
+  box-shadow: 4px 8px 19px -3px rgba(0, 0, 0, 0.27);
+  transition: all 250ms;
+  text-align: center;
+}
+
+.bbutton:hover {
+  color: #e8e8e8;
+}
+
+.bbutton:hover::before {
+  width: 100%;
+}
+
+.movie-card {
+  width: 100%;
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+  border: 0;
+  display: block;
+}
+
+.containerr {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.movie-page {
+  padding: 30px 0;
+}
+
+.no-movies {
+  color: #c4c4c4;
+  font-size: 1rem;
+  text-align: center;
 }

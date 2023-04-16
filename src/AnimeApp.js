@@ -12,10 +12,10 @@ import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import {
   db,
-  AddShowtoFirestoreWatchList,
-  RemoveShowfromFirestoreWatchList,
-  AddShowtoFirestoreWatchedList,
-  RemoveShowfromFirestoreWatchedList,
+  AddAnimetoFirestoreWatchList,
+  RemoveAnimefromFirestoreWatchList,
+  AddAnimetoFirestoreWatchedList,
+  RemoveAnimefromFirestoreWatchedList,
 } from "./config/firebase";
 import {
   getDocs,
@@ -25,10 +25,9 @@ import {
   orderBy,
   query,
 } from "firebase/firestore";
-import "./navbarbuttons.css";
 
-const TVApp = () => {
-  const [shows, setShows] = useState([]);
+const AnimeApp = () => {
+  const [anime, setAnime] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [watchlist, setWatchlist] = useState([]);
   const [watched, setWatched] = useState([]);
@@ -41,7 +40,15 @@ const TVApp = () => {
     const Showresponse = await fetch(url);
     const responseJson = await Showresponse.json();
     if (!responseJson.errors) {
-      setShows(responseJson.results);
+      const animeresponse = responseJson.results;
+      const animelistresponse = animeresponse.filter(
+        (anime) =>
+          (parseInt(anime.genre_ids[0]) == 16 &&
+            anime.origin_country[0] == "JP") ||
+          (parseInt(anime.genre_ids[1]) == 16 &&
+            anime.origin_country[0] == "JP")
+      );
+      setAnime(animelistresponse);
     }
   };
   useEffect(() => {
@@ -49,18 +56,18 @@ const TVApp = () => {
   }, [searchValue]);
 
   useEffect(() => {
-    FetchShowWatchList();
-    FetchShowWatchedList();
+    FetchAnimeWatchList();
+    FetchAnimeWatchedList();
     console.log(watchlist);
   }, []);
 
-  const FetchShowWatchList = () => {
+  const FetchAnimeWatchList = () => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       const db = getFirestore();
       const usersRef = collection(db, "users");
       if (user) {
         const userDocRef = doc(usersRef, user.uid);
-        const subcollectionRef = collection(userDocRef, "tvwatchlist");
+        const subcollectionRef = collection(userDocRef, "animewatchlist");
         const snapshot = getDocs(subcollectionRef);
         const q = query(subcollectionRef, orderBy("timestamp", "desc"));
         getDocs(q)
@@ -75,14 +82,13 @@ const TVApp = () => {
           .catch((err) => {
             console.log(err.message);
           });
-
         /*const ml = getDocs(subcollectionRef)
           .then((snapshot) => {
-            const tvwatchlistfromfirestore = [];
+            const animewatchlistfromfirestore = [];
             snapshot.docs.forEach((doc) => {
-              tvwatchlistfromfirestore.push({ ...doc.data(), id: doc.id });
+              animewatchlistfromfirestore.push({ ...doc.data(), id: doc.id });
             });
-            setWatchlist(tvwatchlistfromfirestore.reverse());
+            setWatchlist(animewatchlistfromfirestore.reverse());
           })
           .catch((err) => {
             console.log(err.message);
@@ -93,13 +99,13 @@ const TVApp = () => {
       return unsubscribe;
     });
   };
-  const FetchShowWatchedList = () => {
+  const FetchAnimeWatchedList = () => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       const db = getFirestore();
       const usersRef = collection(db, "users");
       if (user) {
         const userDocRef = doc(usersRef, user.uid);
-        const subcollectionRef = collection(userDocRef, "tvwatchedlist");
+        const subcollectionRef = collection(userDocRef, "animewatchedlist");
         const snapshot = getDocs(subcollectionRef);
         const q = query(subcollectionRef, orderBy("timestamp", "desc"));
         getDocs(q)
@@ -114,14 +120,13 @@ const TVApp = () => {
           .catch((err) => {
             console.log(err.message);
           });
-
         /*const ml = getDocs(subcollectionRef)
           .then((snapshot) => {
-            const tvwatchlistfromfirestore = [];
+            const animewatchlistfromfirestore = [];
             snapshot.docs.forEach((doc) => {
-              tvwatchlistfromfirestore.push({ ...doc.data(), id: doc.id });
+              animewatchlistfromfirestore.push({ ...doc.data(), id: doc.id });
             });
-            setWatched(tvwatchlistfromfirestore.reverse());
+            setWatched(animewatchlistfromfirestore.reverse());
           })
           .catch((err) => {
             console.log(err.message);
@@ -132,42 +137,42 @@ const TVApp = () => {
       return unsubscribe;
     });
   };
-  const addtolist = (show) => {
-    if (watchlist.find((s) => parseInt(s.id) === show.id)) {
+  const addtolist = (anime) => {
+    if (watchlist.find((a) => parseInt(a.id) === anime.id)) {
       alert("This show is already in your watchlist!");
       return;
     }
-    if (watched.find((s) => parseInt(s.id) === show.id)) {
+    if (watched.find((a) => parseInt(a.id) === anime.id)) {
       alert("This show is already in your watched list!");
       return;
     }
-    const newList = [show, ...watchlist];
+    const newList = [anime, ...watchlist];
     setWatchlist(newList);
-    AddShowtoFirestoreWatchList(show);
+    AddAnimetoFirestoreWatchList(anime);
     console.log(watchlist);
   };
-  const removefromlist = (show) => {
-    const newlist = watchlist.filter((favourite) => favourite.id !== show.id);
+  const removefromlist = (anime) => {
+    const newlist = watchlist.filter((favourite) => favourite.id !== anime.id);
     setWatchlist(newlist);
-    RemoveShowfromFirestoreWatchList(show);
+    RemoveAnimefromFirestoreWatchList(anime);
   };
-  const addtowatchedlist = (show) => {
-    if (watched.find((s) => parseInt(s.id) === show.id)) {
+  const addtowatchedlist = (anime) => {
+    if (watched.find((a) => parseInt(a.id) === anime.id)) {
       alert("This show is already in your watched list!");
       return;
     }
-    const newlist = watchlist.filter((favourite) => favourite.id !== show.id);
+    const newlist = watchlist.filter((favourite) => favourite.id !== anime.id);
     setWatchlist(newlist);
-    const newList = [show, ...watched];
+    const newList = [anime, ...watched];
     setWatched(newList);
-    AddShowtoFirestoreWatchedList(show);
-    RemoveShowfromFirestoreWatchList(show);
+    AddAnimetoFirestoreWatchedList(anime);
+    RemoveAnimefromFirestoreWatchList(anime);
     console.log(watched);
   };
-  const removefromwatched = (show) => {
-    const newlist = watched.filter((favourite) => favourite.id !== show.id);
+  const removefromwatched = (anime) => {
+    const newlist = watched.filter((favourite) => favourite.id !== anime.id);
     setWatched(newlist);
-    RemoveShowfromFirestoreWatchedList(show);
+    RemoveAnimefromFirestoreWatchedList(anime);
   };
   const logout = async (e) => {
     e.preventDefault();
@@ -186,8 +191,8 @@ const TVApp = () => {
     navigate("/");
   };
 
-  const navigatetoanime = () => {
-    navigate("/anime");
+  const navigatetotvshows = () => {
+    navigate("/tv");
   };
   return (
     <div>
@@ -229,8 +234,8 @@ const TVApp = () => {
         <button className="buttonn" onClick={navigatetomovies}>
           Movies
         </button>
-        <button className=" buttonn" onClick={navigatetoanime}>
-          Anime
+        <button className=" buttonn" onClick={navigatetotvshows}>
+          TV Shows
         </button>
         <button className="buttonn " onClick={logout}>
           Logout
@@ -238,7 +243,7 @@ const TVApp = () => {
       </nav>
       <div className="container-fluid movie-app">
         <div className="row d-flex align-items-center mt-4 mb-4">
-          <MovieHeading heading="TV Shows" />
+          <MovieHeading heading="Anime" />
         </div>
         <div className="row d-flex align-items-center mt-4 mb-4">
           <SearchBox
@@ -248,7 +253,7 @@ const TVApp = () => {
         </div>
         <div className="row">
           <MovieList
-            movies={shows}
+            movies={anime}
             handleoverlayclick={addtolist}
             handleoverlayclick2={addtowatchedlist}
             watchlist={AddtoWatchList}
@@ -277,4 +282,4 @@ const TVApp = () => {
   );
 };
 
-export default TVApp;
+export default AnimeApp;

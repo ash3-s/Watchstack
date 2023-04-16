@@ -13,7 +13,7 @@ import { Handlelogin } from "../config/firebase";
 import "../login.css";
 import GoogleIcon from "@mui/icons-material/Google";
 
-const Home = ({ component: Component, ...rest }) => {
+const Signup = ({ component: Component, ...rest }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [formErrors, setFormErrors] = useState({});
@@ -88,29 +88,13 @@ const Home = ({ component: Component, ...rest }) => {
     }
   };
 
-  const login = async (e) => {
-    if (!(formErrors.email || formErrors.password)) {
-      e.preventDefault();
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        navigate("/movies");
-      } catch (error) {
-        alert("Invalid login credentials!");
-        console.error();
-      }
-    } else {
-      alert("Invalid login credentials!");
-    }
-  };
-
   const navigatetohome = () => {
     navigate("/");
   };
 
-  const navigatetosignup = () => {
-    navigate("/signup");
+  const navigatetologin = () => {
+    navigate("/login");
   };
-
   return (
     <div>
       <nav className="navbar">
@@ -150,7 +134,7 @@ const Home = ({ component: Component, ...rest }) => {
         </div>
       </nav>
       <div class="login-box">
-        <p>Login</p>
+        <p>Sign Up</p>
         <form>
           <div class="user-box">
             <input
@@ -182,106 +166,24 @@ const Home = ({ component: Component, ...rest }) => {
               </div>
             )}
           </div>
-          <button className="btttn" onClick={login}>
+          <button className="btttn" onClick={signIn}>
             Submit
           </button>
           <div className="bttn">
             <button onClick={signInWithGoogle}>
-              <GoogleIcon /> Sign in with Google
+              <GoogleIcon /> Sign up with Google
             </button>
           </div>
         </form>
         <p>
-          Don't have an account?
-          <span className="signup" onClick={navigatetosignup}>
+          Already have an account?
+          <span className="signup" onClick={navigatetologin}>
             {" "}
-            Sign up!
+            Login!
           </span>
         </p>
       </div>
     </div>
   );
 };
-export default Home;
-
-/* return (
-    <div>
-      <form>
-        <div className="form-group">
-          <label>Email address</label>
-          <input
-            type="email"
-            className="form-control"
-            id="exampleInputEmail1"
-            aria-describedby="emailHelp"
-            placeholder="Enter email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className="form-group">
-          <label>Password</label>
-          <input
-            type="password"
-            className="form-control"
-            id="exampleInputPassword1"
-            placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div className="form-check">
-          <input
-            type="checkbox"
-            className="form-check-input"
-            id="exampleCheck1"
-          />
-          <label className="form-check-label">Check me out</label>
-        </div>
-        <button type="submit" className="btn btn-primary" onClick={signIn}>
-          Sign Up
-        </button>
-      </form>
-      <form>
-        <div className="form-group">
-          <label>Email address</label>
-          <input
-            type="email"
-            className="form-control"
-            id="exampleInputEmail1"
-            aria-describedby="emailHelp"
-            placeholder="Enter email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className="form-group">
-          <label>Password</label>
-          <input
-            type="password"
-            className="form-control"
-            id="exampleInputPassword1"
-            placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div className="form-check">
-          <input
-            type="checkbox"
-            className="form-check-input"
-            id="exampleCheck1"
-          />
-          <label className="form-check-label">Check me out</label>
-        </div>
-        <button type="submit" className="btn btn-primary" onClick={login}>
-          Login
-        </button>
-      </form>
-      <div>
-        <button
-          type="submit"
-          className="btn btn-primary"
-          onClick={signInWithGoogle}
-        >
-          Sign in with Google
-        </button>
-      </div>
-    </div>
-  );*/
+export default Signup;

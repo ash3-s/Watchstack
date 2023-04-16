@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import MovieList from "./components/MovieList";
+import GameList from "./components/GameList";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import MovieHeading from "./components/MovieHeading";
@@ -9,166 +9,72 @@ import RemovefromWatchList from "./components/RemovefromWatchList";
 import MovieList2 from "./components/MovieList2";
 import { auth } from "./config/firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link, useSubmit } from "react-router-dom";
 import {
   db,
-  AddShowtoFirestoreWatchList,
-  RemoveShowfromFirestoreWatchList,
-  AddShowtoFirestoreWatchedList,
-  RemoveShowfromFirestoreWatchedList,
+  AddGametoFirestoreBacklog,
+  RemoveGamefromFirestoreBacklog,
+  AddGametoFirestorePlayedList,
+  RemoveGamefromFirestorePlayedList,
 } from "./config/firebase";
-import {
-  getDocs,
-  collection,
-  getFirestore,
-  doc,
-  orderBy,
-  query,
-} from "firebase/firestore";
-import "./navbarbuttons.css";
+import { getDocs, collection, getFirestore, doc } from "firebase/firestore";
+import TVApp from "./TVApp";
 
-const TVApp = () => {
-  const [shows, setShows] = useState([]);
-  const [searchValue, setSearchValue] = useState("");
-  const [watchlist, setWatchlist] = useState([]);
-  const [watched, setWatched] = useState([]);
+const Dashboard = () => {
+  const [backlog, setBacklog] = useState([]);
+  const [played, setPlayed] = useState([]);
   const navigate = useNavigate();
-  const users = collection(db, "Users");
-
-  const getMovieRequest = async (searchValue) => {
-    const url = `https://api.themoviedb.org/3/search/tv?api_key=f46cc141482b65a1ce4af7ceec09ccd5&language=en-US&page=1&include_adult=false&query=${searchValue}`;
-
-    const Showresponse = await fetch(url);
-    const responseJson = await Showresponse.json();
-    if (!responseJson.errors) {
-      setShows(responseJson.results);
-    }
-  };
-  useEffect(() => {
-    getMovieRequest(searchValue);
-  }, [searchValue]);
 
   useEffect(() => {
-    FetchShowWatchList();
-    FetchShowWatchedList();
-    console.log(watchlist);
+    FetchGameBacklog();
   }, []);
 
-  const FetchShowWatchList = () => {
+  const FetchGameBacklog = () => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       const db = getFirestore();
       const usersRef = collection(db, "users");
       if (user) {
         const userDocRef = doc(usersRef, user.uid);
-        const subcollectionRef = collection(userDocRef, "tvwatchlist");
+        const subcollectionRef = collection(userDocRef, "gamebacklog");
         const snapshot = getDocs(subcollectionRef);
-        const q = query(subcollectionRef, orderBy("timestamp", "desc"));
-        getDocs(q)
-          .then((querySnapshot) => {
-            const moviewatchlistfromfirestore = [];
-            querySnapshot.forEach((doc) => {
-              moviewatchlistfromfirestore.push({ ...doc.data(), id: doc.id });
-              console.log(doc);
+        const ml = getDocs(subcollectionRef)
+          .then((snapshot) => {
+            const gamebacklogfromfirestore = [];
+            snapshot.docs.forEach((doc) => {
+              gamebacklogfromfirestore.push({ ...doc.data(), id: doc.id });
             });
-            setWatchlist(moviewatchlistfromfirestore);
+            setBacklog(gamebacklogfromfirestore.reverse());
           })
           .catch((err) => {
             console.log(err.message);
           });
-
-        /*const ml = getDocs(subcollectionRef)
-          .then((snapshot) => {
-            const tvwatchlistfromfirestore = [];
-            snapshot.docs.forEach((doc) => {
-              tvwatchlistfromfirestore.push({ ...doc.data(), id: doc.id });
-            });
-            setWatchlist(tvwatchlistfromfirestore.reverse());
-          })
-          .catch((err) => {
-            console.log(err.message);
-          });*/
       } else {
         console.log("error");
       }
       return unsubscribe;
     });
   };
-  const FetchShowWatchedList = () => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      const db = getFirestore();
-      const usersRef = collection(db, "users");
-      if (user) {
-        const userDocRef = doc(usersRef, user.uid);
-        const subcollectionRef = collection(userDocRef, "tvwatchedlist");
-        const snapshot = getDocs(subcollectionRef);
-        const q = query(subcollectionRef, orderBy("timestamp", "desc"));
-        getDocs(q)
-          .then((querySnapshot) => {
-            const moviewatchlistfromfirestore = [];
-            querySnapshot.forEach((doc) => {
-              moviewatchlistfromfirestore.push({ ...doc.data(), id: doc.id });
-              console.log(doc);
-            });
-            setWatched(moviewatchlistfromfirestore);
-          })
-          .catch((err) => {
-            console.log(err.message);
-          });
 
-        /*const ml = getDocs(subcollectionRef)
-          .then((snapshot) => {
-            const tvwatchlistfromfirestore = [];
-            snapshot.docs.forEach((doc) => {
-              tvwatchlistfromfirestore.push({ ...doc.data(), id: doc.id });
-            });
-            setWatched(tvwatchlistfromfirestore.reverse());
-          })
-          .catch((err) => {
-            console.log(err.message);
-          });*/
-      } else {
-        console.log("error");
-      }
-      return unsubscribe;
-    });
-  };
-  const addtolist = (show) => {
-    if (watchlist.find((s) => parseInt(s.id) === show.id)) {
-      alert("This show is already in your watchlist!");
+  const addtoplayedlist = (game) => {
+    if (played.find((m) => parseInt(m.id) === game.id)) {
+      alert("This Game is already in your Played list!");
       return;
     }
-    if (watched.find((s) => parseInt(s.id) === show.id)) {
-      alert("This show is already in your watched list!");
-      return;
-    }
-    const newList = [show, ...watchlist];
-    setWatchlist(newList);
-    AddShowtoFirestoreWatchList(show);
-    console.log(watchlist);
+    const newlist = backlog.filter((favourite) => favourite.id !== game.id);
+    setBacklog(newlist);
+    const newList = [game, ...played];
+    setPlayed(newList);
+    AddGametoFirestorePlayedList(game);
+    RemoveGamefromFirestoreBacklog(game);
+    console.log(played);
   };
-  const removefromlist = (show) => {
-    const newlist = watchlist.filter((favourite) => favourite.id !== show.id);
-    setWatchlist(newlist);
-    RemoveShowfromFirestoreWatchList(show);
+
+  const removefrombacklog = (game) => {
+    const newlist = backlog.filter((favourite) => favourite.id !== game.id);
+    setBacklog(newlist);
+    RemoveGamefromFirestoreBacklog(game);
   };
-  const addtowatchedlist = (show) => {
-    if (watched.find((s) => parseInt(s.id) === show.id)) {
-      alert("This show is already in your watched list!");
-      return;
-    }
-    const newlist = watchlist.filter((favourite) => favourite.id !== show.id);
-    setWatchlist(newlist);
-    const newList = [show, ...watched];
-    setWatched(newList);
-    AddShowtoFirestoreWatchedList(show);
-    RemoveShowfromFirestoreWatchList(show);
-    console.log(watched);
-  };
-  const removefromwatched = (show) => {
-    const newlist = watched.filter((favourite) => favourite.id !== show.id);
-    setWatched(newlist);
-    RemoveShowfromFirestoreWatchedList(show);
-  };
+
   const logout = async (e) => {
     e.preventDefault();
     try {
@@ -178,17 +84,10 @@ const TVApp = () => {
     }
   };
 
-  const navigatetomovies = () => {
-    navigate("/movies");
-  };
-
   const navigatetohome = () => {
     navigate("/");
   };
 
-  const navigatetoanime = () => {
-    navigate("/anime");
-  };
   return (
     <div>
       <nav className="navbar">
@@ -226,50 +125,18 @@ const TVApp = () => {
             </g>
           </svg>
         </div>
-        <button className="buttonn" onClick={navigatetomovies}>
-          Movies
-        </button>
-        <button className=" buttonn" onClick={navigatetoanime}>
-          Anime
-        </button>
-        <button className="buttonn " onClick={logout}>
-          Logout
-        </button>
       </nav>
       <div className="container-fluid movie-app">
         <div className="row d-flex align-items-center mt-4 mb-4">
-          <MovieHeading heading="TV Shows" />
+          <MovieHeading heading="BACKLOG" />
         </div>
-        <div className="row d-flex align-items-center mt-4 mb-4">
-          <SearchBox
-            searchValue={searchValue}
-            setSearchValue={setSearchValue}
-          />
-        </div>
-        <div className="row">
-          <MovieList
-            movies={shows}
-            handleoverlayclick={addtolist}
-            handleoverlayclick2={addtowatchedlist}
-            watchlist={AddtoWatchList}
-          />
-        </div>
-        <MovieHeading heading="Watchlist" />
-      </div>
-      <div className="row ml-3">
-        <MovieList
-          movies={watchlist}
-          handleoverlayclick={removefromlist}
-          handleoverlayclick2={addtowatchedlist}
-          watchlist={RemovefromWatchList}
-        />
-      </div>
-      <div className="result-card">
-        <div className="poster-wrapper">
-          <MovieHeading heading="Finished Watching" />
-          <MovieList2
-            movies={watched}
-            handleremovefromwatched={removefromwatched}
+
+        <div className="row ml-3">
+          <GameList
+            movies={backlog}
+            handleoverlayclick={removefrombacklog}
+            handleoverlayclick2={addtoplayedlist}
+            watchlist={RemovefromWatchList}
           />
         </div>
       </div>
@@ -277,4 +144,4 @@ const TVApp = () => {
   );
 };
 
-export default TVApp;
+export default Dashboard;

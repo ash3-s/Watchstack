@@ -10,7 +10,9 @@ import {
   query,
   where,
   getDocs,
+  updateDoc,
   deleteDoc,
+  serverTimestamp,
   snapshotEqual,
 } from "firebase/firestore";
 import { useEffect } from "react";
@@ -66,6 +68,12 @@ export const AddMovietoFirestoreWatchList = (movie) => {
         .catch((error) => {
           console.log(error);
         });
+      const updateTimestamp = updateDoc(
+        doc(userDocRef, "moviewatchlist", `${movie.id}`),
+        {
+          timestamp: serverTimestamp(),
+        }
+      );
     } else {
       console.log("error");
     }
@@ -102,6 +110,12 @@ export const AddMovietoFirestoreWatchedList = (movie) => {
         .catch((error) => {
           console.log(error);
         });
+      const updateTimestamp = updateDoc(
+        doc(userDocRef, "moviewatchedlist", `${movie.id}`),
+        {
+          timestamp: serverTimestamp(),
+        }
+      );
     } else {
       console.log("error");
     }
@@ -138,6 +152,12 @@ export const AddShowtoFirestoreWatchList = (show) => {
         .catch((error) => {
           console.log(error);
         });
+      const updateTimestamp = updateDoc(
+        doc(userDocRef, "tvwatchlist", `${show.id}`),
+        {
+          timestamp: serverTimestamp(),
+        }
+      );
     } else {
       console.log("error");
     }
@@ -174,6 +194,12 @@ export const AddShowtoFirestoreWatchedList = (show) => {
         .catch((error) => {
           console.log(error);
         });
+      const updateTimestamp = updateDoc(
+        doc(userDocRef, "tvwatchedlist", `${show.id}`),
+        {
+          timestamp: serverTimestamp(),
+        }
+      );
     } else {
       console.log("error");
     }
@@ -189,6 +215,174 @@ export const RemoveShowfromFirestoreWatchedList = (show) => {
       const userDocRef = doc(usersRef, user.uid);
       const subcollectionRef = collection(userDocRef, "tvwatchedlist");
       deleteDoc(doc(userDocRef, "tvwatchedlist", `${show.id}`));
+    } else {
+      console.log("error");
+    }
+  });
+  return unsubscribe;
+};
+
+export const AddAnimetoFirestoreWatchList = (anime) => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const db = getFirestore();
+    const usersRef = collection(db, "users");
+    if (user) {
+      const userDocRef = doc(usersRef, user.uid);
+      const subcollectionRef = collection(userDocRef, "animewatchlist");
+      setDoc(doc(userDocRef, "animewatchlist", `${anime.id}`), anime)
+        .then((docRef) => {
+          console.log(docRef);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      const updateTimestamp = updateDoc(
+        doc(userDocRef, "animewatchlist", `${anime.id}`),
+        {
+          timestamp: serverTimestamp(),
+        }
+      );
+    } else {
+      console.log("error");
+    }
+  });
+  return unsubscribe;
+};
+
+export const RemoveAnimefromFirestoreWatchList = (anime) => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const db = getFirestore();
+    const usersRef = collection(db, "users");
+    if (user) {
+      const userDocRef = doc(usersRef, user.uid);
+      const subcollectionRef = collection(userDocRef, "animewatchlist");
+      deleteDoc(doc(userDocRef, "animewatchlist", `${anime.id}`));
+    } else {
+      console.log("error");
+    }
+  });
+  return unsubscribe;
+};
+
+export const AddAnimetoFirestoreWatchedList = (anime) => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const db = getFirestore();
+    const usersRef = collection(db, "users");
+    if (user) {
+      const userDocRef = doc(usersRef, user.uid);
+      const subcollectionRef = collection(userDocRef, "animewatchedlist");
+      setDoc(doc(userDocRef, "animewatchedlist", `${anime.id}`), anime)
+        .then((docRef) => {
+          console.log(docRef);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      const updateTimestamp = updateDoc(
+        doc(userDocRef, "animewatchedlist", `${anime.id}`),
+        {
+          timestamp: serverTimestamp(),
+        }
+      );
+    } else {
+      console.log("error");
+    }
+  });
+  return unsubscribe;
+};
+
+export const RemoveAnimefromFirestoreWatchedList = (anime) => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const db = getFirestore();
+    const usersRef = collection(db, "users");
+    if (user) {
+      const userDocRef = doc(usersRef, user.uid);
+      const subcollectionRef = collection(userDocRef, "animewatchedlist");
+      deleteDoc(doc(userDocRef, "animewatchedlist", `${anime.id}`));
+    } else {
+      console.log("error");
+    }
+  });
+  return unsubscribe;
+};
+
+export const AddGametoFirestoreBacklog = (game) => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const db = getFirestore();
+    const usersRef = collection(db, "users");
+    if (user) {
+      const userDocRef = doc(usersRef, user.uid);
+      const subcollectionRef = collection(userDocRef, "gamebacklog");
+      setDoc(doc(userDocRef, "gamebacklog", `${game.id}`), game)
+        .then((docRef) => {
+          console.log(docRef);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      const updateTimestamp = updateDoc(
+        doc(userDocRef, "gamebacklog", `${game.id}`),
+        {
+          timestamp: serverTimestamp(),
+        }
+      );
+    } else {
+      console.log("error");
+    }
+  });
+  return unsubscribe;
+};
+
+export const RemoveGamefromFirestoreBacklog = (game) => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const db = getFirestore();
+    const usersRef = collection(db, "users");
+    if (user) {
+      const userDocRef = doc(usersRef, user.uid);
+      const subcollectionRef = collection(userDocRef, "gamebacklog");
+      deleteDoc(doc(userDocRef, "gamebacklog", `${game.id}`));
+    } else {
+      console.log("error");
+    }
+  });
+  return unsubscribe;
+};
+
+export const AddGametoFirestorePlayedList = (game) => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const db = getFirestore();
+    const usersRef = collection(db, "users");
+    if (user) {
+      const userDocRef = doc(usersRef, user.uid);
+      const subcollectionRef = collection(userDocRef, "gameplayedlist");
+      setDoc(doc(userDocRef, "gameplayedlist", `${game.id}`), game)
+        .then((docRef) => {
+          console.log(docRef);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      const updateTimestamp = updateDoc(
+        doc(userDocRef, "gameplayedlist", `${game.id}`),
+        {
+          timestamp: serverTimestamp(),
+        }
+      );
+    } else {
+      console.log("error");
+    }
+  });
+  return unsubscribe;
+};
+
+export const RemoveGamefromFirestorePlayedList = (game) => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const db = getFirestore();
+    const usersRef = collection(db, "users");
+    if (user) {
+      const userDocRef = doc(usersRef, user.uid);
+      const subcollectionRef = collection(userDocRef, "gameplayedlist");
+      deleteDoc(doc(userDocRef, "gameplayedlist", `${game.id}`));
     } else {
       console.log("error");
     }
