@@ -1,6 +1,13 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@500&display=swap");
 body {
   background: #141414;
   color: #ffffff;
+}
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 .diiv {
   white-space: pre-wrap;
@@ -8,6 +15,16 @@ body {
 
 h1 {
   font-family: "Montserrat", sans-serif;
+}
+.h11 {
+  font-family: "DM Sans", sans-serif;
+  font-size: 4rem;
+  margin-left: 50px;
+  margin-top: 50px;
+}
+.h12 {
+  font-family: "Montserrat", sans-serif;
+  font-size: 3rem;
 }
 
 .wl {
@@ -25,8 +42,13 @@ h1 {
 
 .image-container {
   padding-left: 20px;
+  border-radius: 10px;
   position: relative;
   transition: transform 0.2s;
+}
+.bor img {
+  border-radius: 10px;
+  margin-top: 20px;
 }
 
 .image-container:hover {
@@ -34,25 +56,12 @@ h1 {
   transform: scale(1.1);
 }
 
-.image-container:hover .overlay {
-  opacity: 1;
-}
 .bbt {
   position: absolute;
   margin-left: 73%;
   margin-top: 20px;
 }
-.overlay {
-  position: absolute;
-  background: rgba(0, 0, 0, 0.8);
-  width: 100%;
-  transition: 0.5s ease;
-  opacity: 0;
-  bottom: 20%;
-  font-size: 18px;
-  padding: 20px;
-  text-align: center;
-}
+
 .watchedoverlay {
   bottom: 100%;
 }
@@ -62,12 +71,15 @@ h1 {
 }
 .result-card .poster-wrapper img,
 .filler-poster {
-  width: 75px;
-  height: 113px;
+  width: 100px;
+  height: 150px;
   background-color: #ffffff;
   border-radius: 5px;
   margin-right: 15px;
-  margin-left: 30px;
+  margin-left: 50px;
+  margin-top: 30px;
+  object-fit: cover;
+  object-position: center;
   display: block;
   color: transparent;
 }
@@ -93,20 +105,23 @@ header .inner-content {
   color: transparent;
 }
 
-.image-containerr img {
+.image-containerr {
   position: relative;
-  width: 200px;
-  height: 300px;
   transition: transform 0.2s;
 }
-.image-containerr:hover {
-  cursor: pointer;
-  transform: scale(1.1);
+.img-container {
+  width: 200px;
+  height: 300px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 10px;
+  margin-top: 20px;
 }
 
-.image-containerr:hover .overlay {
-  opacity: 1;
-  margin-top: 100%;
+.image-containerr:hover {
+  cursor: pointer;
+
+  transform: scale(1.1);
 }
 
 .moviecontainer {
@@ -127,8 +142,8 @@ header .inner-content {
   font-size: 18px;
   font-weight: 600;
   color: rgb(255, 255, 255);
-  margin: 15px 0;
-  padding: 10px;
+
+  padding-top: 10px;
   white-space: pre-wrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -141,7 +156,6 @@ header .inner-content {
   font-weight: 600;
   color: rgb(255, 255, 255);
   margin: 15px 0;
-  padding-bottom: 200px;
   white-space: pre-wrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -214,4 +228,185 @@ header .inner-content {
   color: #c4c4c4;
   font-size: 1rem;
   text-align: center;
+}
+
+.wlbutton {
+  position: relative;
+  padding: 10px 20px;
+  border-radius: 7px;
+  border: 1px solid rgb(61, 106, 255);
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 2px;
+  background: transparent;
+  color: #fff;
+  overflow: hidden;
+  box-shadow: 0 0 0 0 transparent;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+}
+
+.wlbutton:hover {
+  background: rgb(61, 106, 255);
+  box-shadow: 0 0 30px 5px rgba(0, 142, 236, 0.815);
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+
+.wlbutton:hover::before {
+  -webkit-animation: sh02 0.5s 0s linear;
+  -moz-animation: sh02 0.5s 0s linear;
+  animation: sh02 0.5s 0s linear;
+}
+
+.wlbutton::before {
+  content: "";
+  display: block;
+  width: 0px;
+  height: 86%;
+  position: absolute;
+  top: 7%;
+  left: 0%;
+  opacity: 0;
+  background: #fff;
+  box-shadow: 0 0 50px 30px #fff;
+  -webkit-transform: skewX(-20deg);
+  -moz-transform: skewX(-20deg);
+  -ms-transform: skewX(-20deg);
+  -o-transform: skewX(-20deg);
+  transform: skewX(-20deg);
+}
+
+@keyframes sh02 {
+  from {
+    opacity: 0;
+    left: 0%;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    left: 100%;
+  }
+}
+
+.wlbutton:active {
+  box-shadow: 0 0 0 0 transparent;
+  -webkit-transition: box-shadow 0.2s ease-in;
+  -moz-transition: box-shadow 0.2s ease-in;
+  transition: box-shadow 0.2s ease-in;
+}
+
+.wlbutton2 {
+  position: relative;
+  padding: 10px 20px;
+  border-radius: 7px;
+  border: 1px solid rgb(61, 255, 106);
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 2px;
+  background: transparent;
+  color: #fff;
+  overflow: hidden;
+  box-shadow: 0 0 0 0 transparent;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+}
+
+.wlbutton2:hover {
+  background: rgb(61, 255, 106);
+  box-shadow: 0 0 30px 5px rgba(0, 236, 142, 0.815);
+  color: black;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+
+.wlbutton2:hover::before {
+  -webkit-animation: sh02 0.5s 0s linear;
+  -moz-animation: sh02 0.5s 0s linear;
+  animation: sh02 0.5s 0s linear;
+}
+
+.wlbutton2::before {
+  content: "";
+  display: block;
+  width: 0px;
+  height: 86%;
+  position: absolute;
+  top: 7%;
+  left: 0%;
+  opacity: 0;
+  background: #fff;
+  box-shadow: 0 0 50px 30px #fff;
+  -webkit-transform: skewX(-20deg);
+  -moz-transform: skewX(-20deg);
+  -ms-transform: skewX(-20deg);
+  -o-transform: skewX(-20deg);
+  transform: skewX(-20deg);
+}
+
+.wlbutton2:active {
+  box-shadow: 0 0 0 0 transparent;
+  -webkit-transition: box-shadow 0.2s ease-in;
+  -moz-transition: box-shadow 0.2s ease-in;
+  transition: box-shadow 0.2s ease-in;
+}
+
+.shadow__btn {
+  padding: 10px 20px;
+  border: none;
+  font-size: 17px;
+  color: #fff;
+  border-radius: 7px;
+  letter-spacing: 4px;
+  font-weight: 700;
+  scale: 75%;
+  text-transform: uppercase;
+  transition: 0.5s;
+  margin-left: -35px;
+  transition-property: box-shadow;
+}
+
+.shadow__btn {
+  background: rgb(0, 140, 255);
+  box-shadow: 0 0 25px rgb(0, 140, 255);
+}
+
+.shadow__btn:hover {
+  box-shadow: 0 0 5px rgb(0, 140, 255), 0 0 25px rgb(0, 140, 255),
+    0 0 50px rgb(0, 140, 255), 0 0 100px rgb(0, 140, 255);
+}
+
+.shadow__btnn {
+  padding: 10px 20px;
+  border: none;
+  font-size: 17px;
+  color: #fff;
+  border-radius: 7px;
+  letter-spacing: 4px;
+  font-weight: 700;
+  scale: 75%;
+  text-transform: uppercase;
+  transition: 0.5s;
+  margin-left: -45px;
+  transition-property: box-shadow;
+}
+
+.shadow__btnn {
+  background: rgb(255, 20, 20);
+  box-shadow: 0 0 25px rgb(255, 50, 20);
+}
+
+.shadow__btnn:hover {
+  box-shadow: 0 0 5px rgb(255, 50, 20), 0 0 25px rgb(255, 50, 20),
+    0 0 50px rgb(255, 50, 20), 0 0 100px rgb(255, 50, 20);
 }

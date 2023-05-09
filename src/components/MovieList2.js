@@ -2,23 +2,17 @@ import React from "react";
 import "../App.css";
 
 const MovieList2 = (props) => {
-  //const FavouriteComponent = props.watchlist;
-
   return (
-    <div>
+    <>
       {props.movies.length > 0 ? (
         <>
           {props.movies.map((movie, index) => (
-            <div className="result-card">
-              {movie.poster_path ? (
-                <img
-                  src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
-                  alt={`${movie.title}Poster`}
-                />
-              ) : (
-                <div className="filler-poster"></div>
-              )}
-              <span className="moviename">
+            <div className="result-card ml-4">
+              <img
+                src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
+                alt={`${movie.title}Poster`}
+              />
+              <span className="moviename mt-4">
                 {movie.title}
                 {movie.name}
               </span>
@@ -29,16 +23,16 @@ const MovieList2 = (props) => {
                     props.handleremovefromwatched(movie);
                   }}
                 >
-                  Remove from Watched
+                  Remove as Watched
                 </button>
               </div>
             </div>
           ))}
         </>
       ) : (
-        <h2 className="no-movies">No items in your list! Add some!</h2>
+        <h2 className="no-movies mt-4">No items in your list! Add some!</h2>
       )}
-    </div>
+    </>
   );
 };
 

@@ -12,7 +12,13 @@
   transition-duration: 400ms;
   transition-property: color;
 }
-
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 12;
+}
 .buttonn:focus,
 .buttonn:hover {
   color: #fff;
@@ -48,4 +54,19 @@
   margin-left: 1px;
   margin-right: 20px;
   margin-top: 50px;
+}
+
+.navbar .buttonn {
+  font-size: 18px;
+  color: #e1e1e1;
+  font-family: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  position: relative;
+  border: none;
+  background: none;
+  text-transform: uppercase;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-duration: 400ms;
+  transition-property: color;
 }

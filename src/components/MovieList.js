@@ -1,37 +1,66 @@
 import React from "react";
 import "../App.css";
+import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
+import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
 
 const MovieList = (props) => {
-  const FavouriteComponent = props.watchlist;
   return (
     <>
       {props.movies.map((movie, index) => (
-        <div className="image-container d-flex justify-align-content-start m-1">
-          {movie.poster_path ? (
-            <div>
-              <img
-                src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
-                alt={`${movie.title}Poster`}
-              />
-              <div>
-                <span className="moviename">
-                  {movie.title}
-                  {movie.name}
-                </span>
+        <div className="image-container justify-align-content-start m-1 mb-5 ml-4">
+          <div>
+            {movie.poster_path ? (
+              <div className="bor">
+                <img
+                  src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
+                  alt={`${movie.title}Poster`}
+                />
+                <div>
+                  <span className="moviename">
+                    {movie.title}
+                    {movie.name}
+                  </span>
+                </div>
+                <div className="mt-4">
+                  <button
+                    class="wlbutton"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      props.handleoverlayclick(movie);
+                    }}
+                  >
+                    Add to Watchlist
+                    <PlaylistAddIcon />
+                  </button>
+                </div>
+                <div className="mt-3">
+                  <button
+                    class="wlbutton2"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      props.handleoverlayclick2(movie);
+                    }}
+                  >
+                    Mark As Watched <PlaylistAddCheckIcon />
+                  </button>
+                </div>
               </div>
-            </div>
-          ) : (
-            <div>
-              <div className="filler-poster"></div>
-              <span className="moviename">Movie not Available</span>
-            </div>
-          )}
+            ) : null}
+          </div>
+        </div>
+      ))}
+    </>
+  );
+};
 
-          <div
+export default MovieList;
+
+/*
+
+<div
             onClick={(event) => {
               event.stopPropagation();
               props.handleoverlayclick(movie);
-              console.log(movie);
             }}
             className="overlay d-flex align-items-center justify-content-center "
           >
@@ -58,10 +87,5 @@ const MovieList = (props) => {
               </>
             </div>
           </div>
-        </div>
-      ))}
-    </>
-  );
-};
 
-export default MovieList;
+          */

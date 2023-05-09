@@ -73,7 +73,13 @@ export const AddMovietoFirestoreWatchList = (movie) => {
         {
           timestamp: serverTimestamp(),
         }
-      );
+      )
+        .then((docRef) => {
+          console.log(docRef);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
       console.log("error");
     }
