@@ -22,7 +22,7 @@ const MovieWatchList = (props) => {
                   </span>
                   <div>
                     <button
-                      class="shadow__btn mt-2"
+                      class="wlbutton2 mt-2"
                       onClick={(event) => {
                         event.stopPropagation();
                         props.handleoverlayclick2(movie);
@@ -34,7 +34,7 @@ const MovieWatchList = (props) => {
                   </div>
                   <div>
                     <button
-                      class="shadow__btnn mt-2"
+                      class="wlbutton3 mt-3"
                       onClick={(event) => {
                         event.stopPropagation();
                         props.handleoverlayclick(movie);
