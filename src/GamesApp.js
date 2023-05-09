@@ -3,7 +3,7 @@ import GameList from "./components/GameList";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import MovieHeading from "./components/MovieHeading";
-import SearchBox from "./components/SearchBox2";
+import SearchBox from "./components/SearchBox";
 import GameList2 from "./components/GameList2";
 import { auth } from "./config/firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
